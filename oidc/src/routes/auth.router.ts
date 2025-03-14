@@ -11,7 +11,7 @@ export default (oidc: Provider) => {
 
 	router.post('/users', express.json(), register)
 
-	// router.post('/token', express.urlencoded({ extended: true }), token)
+	router.post('/token', express.urlencoded({ extended: true }), token)
 
 	router.post('/interaction/:uid/login', noCache, express.urlencoded({ extended: true }), login)
 	router.post('/interaction/:uid/confirm', noCache, confirmInteraction)
