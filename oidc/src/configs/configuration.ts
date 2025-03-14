@@ -124,15 +124,13 @@ export const configuration: Configuration = {
 	cookies: {
 		keys: ['cookies-secret-key'], // Make sure this is set
 		long: {
-			domain: 'localhost',
-			signed: false,
-			secure: false, // Set to false for HTTP in development
-			sameSite: 'lax' // Try 'lax' for development
+			signed: true,
+			secure: true, // Set to false for HTTP in development
+			sameSite: 'strict' // Try 'lax' for development
 		},
 		short: {
-			domain: 'localhost',
-			signed: false,
-			secure: false, // Set to false for HTTP in development
+			signed: true,
+			secure: true, // Set to false for HTTP in development
 			sameSite: 'lax'
 		}
 	},

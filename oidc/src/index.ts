@@ -1,5 +1,6 @@
 import express from 'express'
 import path from 'path'
+import url from 'url'
 import { configuration } from './configs/configuration.js'
 import { oidc } from './configs/provider.js'
 import connectMongodb from './db/mongodb/connection.js'
@@ -27,6 +28,32 @@ const start = async () => {
 	});
 
 	const provider = oidc(process.env.PUBLIC_OIDC_ISSUER as string, configuration)
+
+	const prod = process.env.NODE_ENV === 'production';
+
+	// for production environment
+	// setup trust porxy
+	if (prod) {
+	  app.enable('trust proxy');
+	  provider.proxy = true;
+  
+	  app.use((req, res, next) => {
+		if (req.secure) {
+		  next();
+		} else if (req.method === 'GET' || req.method === 'HEAD') {
+		  res.redirect(url.format({
+			protocol: 'https',
+			host: req.get('host'),
+			pathname: req.originalUrl,
+		  }));
+		} else {
+		  res.status(400).json({
+			error: 'invalid_request',
+			error_description: 'do yourself a favor and only use https',
+		  });
+		}
+	  });
+	}
 
 	// Use the router
 	app.use('/', router(provider))
