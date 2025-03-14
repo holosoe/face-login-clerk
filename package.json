@@ -1,12 +1,13 @@
 {
-  "name": "openid-connect-app",
-  "version": "2.2.1",
-  "description": "",
+  "name": "face-login-clerk",
+  "version": "0.0.1",
+  "description": "Face Login Clerk",
   "keywords": [],
   "license": "MIT",
   "author": "dev@code.dev",
   "type": "module",
   "scripts": {
+    "start": "node --loader ts-node/esm oidc/src/index.ts",
     "start:oidc": "node --loader ts-node/esm oidc/src/index.ts",
     "test": "echo \"Gandalf: You shall !not pass!\" && exit 1"
   },
