@@ -123,7 +123,7 @@ export default (oidc: Provider): { [key: string]: (req: Request, res: Response) 
 		}
 	},
 	token: async (req, res) => {
-		console.log(req.body)
+		console.log('/token', req.body)
 		res.status(200).send('Token generated.')
 	},
 })

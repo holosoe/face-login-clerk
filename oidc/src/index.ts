@@ -24,11 +24,12 @@ const start = async () => {
 	// log requests
 	app.use((req, res, next) => {
 		console.log('ping', req.method, req.url);
+		
 		next();
 
 		res.on("finish", () => {
-			console.log(req.params, req.query, req.body);
-			console.log(res.statusCode, res.statusMessage);
+			console.log("finish req", req.params, req.query, req.body);
+			console.log("finish res", res.statusCode, res.statusMessage);
 		});
 	});
 
@@ -54,7 +55,7 @@ const start = async () => {
 			} else {
 				res.status(400).json({
 					error: 'invalid_request',
-					error_description: 'do yourself a favor and only use https',
+					error_description: 'only HTTPS is allowed',
 				});
 			}
 		});
