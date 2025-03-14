@@ -21,16 +21,18 @@ const start = async () => {
 	// Serve static files
 	app.use(express.static(path.resolve('public')))
 
+	app.use(express.urlencoded({ extended: true }))
+
 	// log requests
 	app.use((req, res, next) => {
 		console.log('ping', req.method, req.url);
-		
+
 		next();
 
-		res.on("finish", () => {
-			console.log("finish req", req.params, req.query, req.body);
-			console.log("finish res", res.statusCode, res.statusMessage);
-		});
+		// res.on("finish", () => {
+		// 	console.log("finish req", req.params, req.query, req.body);
+		// 	console.log("finish res", res.statusCode, res.statusMessage);
+		// });
 	});
 
 	const provider = oidc(process.env.PUBLIC_OIDC_ISSUER as string, configuration)
@@ -62,16 +64,17 @@ const start = async () => {
 	}
 
 	// middleware for oidc provider
-	// provider.use(async (ctx, next) => {
-	// 	/** pre-processing
-	// 	 * you may target a specific action here by matching `ctx.path`
-	// 	 */
-	// 	console.log('pre middleware', ctx.method, ctx.path)
+	provider.use(async (ctx, next) => {
+		/** pre-processing
+		 * you may target a specific action here by matching `ctx.path`
+		 */
+		// console.log('pre middleware', ctx.method, ctx.path)
 
-	// 	await next()
+		await next()
 
-	// 	console.log('post middleware', ctx.method, ctx.oidc.route)
-	// })
+		console.log('post middleware', ctx.method, ctx.oidc.route)
+		console.log(ctx.oidc.entities, ctx.oidc.body, ctx.oidc.error)
+	})
 
 	// Use the router
 	app.use('/', router(provider))
