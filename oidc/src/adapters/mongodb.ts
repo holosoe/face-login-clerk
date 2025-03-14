@@ -32,11 +32,16 @@ export class MongoDbAdapter {
 	 *
 	 */
 	async upsert(id: string, payload: any, expiresIn: number): Promise<any> {
-		return await BaseModel.updateOne(
-			{ key: id },
-			{ payload, expiresAt: new Date(Date.now() + expiresIn * 1000) },
-			{ upsert: true },
-		)
+		try {
+			console.log('upsert', id, payload, expiresIn)
+			return await BaseModel.updateOne(
+				{ key: id },
+				{ payload, expiresAt: new Date(Date.now() + expiresIn * 1000) },
+				{ upsert: true },
+			)
+		} catch (e) {
+			console.log('error upsert', e)
+		}
 	}
 
 	/**
@@ -100,6 +105,7 @@ export class MongoDbAdapter {
 	 *
 	 */
 	async consume(id: string): Promise<any> {
+		console.log('consume', id)
 		return await BaseModel.updateOne(
 			{ key: id, 'payload.kind': this.model },
 			{ consumed: Date.now() / 1000 },

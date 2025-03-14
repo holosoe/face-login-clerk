@@ -9,6 +9,8 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+let server: any;
+
 const start = async () => {
 	await connectMongodb()
 
@@ -21,7 +23,7 @@ const start = async () => {
 	// Serve static files
 	app.use(express.static(path.resolve('public')))
 
-	app.use(express.urlencoded({ extended: true }))
+	// app.use(express.urlencoded({ extended: true }))
 
 	// log requests
 	app.use((req, res, next) => {
@@ -70,10 +72,15 @@ const start = async () => {
 		 */
 		// console.log('pre middleware', ctx.method, ctx.path)
 
-		await next()
+		try {
+			await next()
+		} catch (err) {
+			console.error(err)
+			ctx.oidc.error = err
+		}
 
-		console.log('post middleware', ctx.method, ctx.oidc.route)
 		console.log('#########################')
+		console.log('post middleware', ctx.method, ctx.oidc.route)
 		console.log(ctx.oidc.body, ctx.oidc.error)
 		console.log('#########################')
 	})
@@ -84,9 +91,15 @@ const start = async () => {
 	// Mount the OIDC provider
 	app.use('/', provider.callback())
 
-	app.listen(process.env.PORT_OIDC, () => {
+	server = app.listen(process.env.PORT_OIDC, () => {
 		console.log(`oidc-provider listening on port ${process.env.PORT_OIDC}`)
 	})
 }
 
-void start()
+try {
+	await start()
+} catch (err) {
+	if (server?.listening) server.close();
+	console.error(err);
+	process.exitCode = 1;
+}
