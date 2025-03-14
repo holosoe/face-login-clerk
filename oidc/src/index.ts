@@ -29,10 +29,10 @@ const start = async () => {
 
 		next();
 
-		// res.on("finish", () => {
-		// 	console.log("finish req", req.params, req.query, req.body);
-		// 	console.log("finish res", res.statusCode, res.statusMessage);
-		// });
+		res.on("finish", () => {
+			// console.log("finish req", req.params, req.query, req.body);
+			console.log("finish res", res.statusCode, res.statusMessage);
+		});
 	});
 
 	const provider = oidc(process.env.PUBLIC_OIDC_ISSUER as string, configuration)
@@ -73,7 +73,9 @@ const start = async () => {
 		await next()
 
 		console.log('post middleware', ctx.method, ctx.oidc.route)
-		console.log(ctx.oidc.entities, ctx.oidc.body, ctx.oidc.error)
+		console.log('#########################')
+		console.log(ctx.oidc.body, ctx.oidc.error)
+		console.log('#########################')
 	})
 
 	// Use the router
