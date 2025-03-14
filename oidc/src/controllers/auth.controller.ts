@@ -122,4 +122,8 @@ export default (oidc: Provider): { [key: string]: (req: Request, res: Response) 
 			res.status(501).send('Not implemented.')
 		}
 	},
+	token: async (req, res) => {
+		console.log(req.body)
+		res.status(200).send('Token generated.')
+	},
 })

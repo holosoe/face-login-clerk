@@ -23,8 +23,13 @@ const start = async () => {
 
 	// log requests
 	app.use((req, res, next) => {
-		console.log(`ping: ${req.method} ${req.url} ${req.body}`);
+		console.log('ping', req.method, req.url);
 		next();
+
+		res.on("finish", () => {
+			console.log(req.params, req.query, req.body);
+			console.log(res.statusCode, res.statusMessage);
+		});
 	});
 
 	const provider = oidc(process.env.PUBLIC_OIDC_ISSUER as string, configuration)
@@ -34,26 +39,38 @@ const start = async () => {
 	// for production environment
 	// setup trust porxy
 	if (prod) {
-	  app.enable('trust proxy');
-	  provider.proxy = true;
-  
-	  app.use((req, res, next) => {
-		if (req.secure) {
-		  next();
-		} else if (req.method === 'GET' || req.method === 'HEAD') {
-		  res.redirect(url.format({
-			protocol: 'https',
-			host: req.get('host'),
-			pathname: req.originalUrl,
-		  }));
-		} else {
-		  res.status(400).json({
-			error: 'invalid_request',
-			error_description: 'do yourself a favor and only use https',
-		  });
-		}
-	  });
+		app.enable('trust proxy');
+		provider.proxy = true;
+
+		app.use((req, res, next) => {
+			if (req.secure) {
+				next();
+			} else if (req.method === 'GET' || req.method === 'HEAD') {
+				res.redirect(url.format({
+					protocol: 'https',
+					host: req.get('host'),
+					pathname: req.originalUrl,
+				}));
+			} else {
+				res.status(400).json({
+					error: 'invalid_request',
+					error_description: 'do yourself a favor and only use https',
+				});
+			}
+		});
 	}
+
+	// middleware for oidc provider
+	// provider.use(async (ctx, next) => {
+	// 	/** pre-processing
+	// 	 * you may target a specific action here by matching `ctx.path`
+	// 	 */
+	// 	console.log('pre middleware', ctx.method, ctx.path)
+
+	// 	await next()
+
+	// 	console.log('post middleware', ctx.method, ctx.oidc.route)
+	// })
 
 	// Use the router
 	app.use('/', router(provider))
