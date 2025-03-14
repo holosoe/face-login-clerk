@@ -23,7 +23,7 @@ const start = async () => {
 
 	// log requests
 	app.use((req, res, next) => {
-		console.log(`ping: ${req.method} ${req.url}`);
+		console.log(`ping: ${req.method} ${req.url} ${req.body}`);
 		next();
 	});
 
