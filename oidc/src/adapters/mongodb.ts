@@ -43,7 +43,7 @@ export class MongoDbAdapter {
 			return await BaseModel.updateOne(
 				{ key: id },
 				// { payload, expiresAt: new Date(Date.now() + expiresIn * 1000) },
-				{ $set: { payload, ...(expiresAt ? { expiresAt } : undefined) } },
+				{ $set: { payload, expiresAt: expiresAt ? expiresAt : undefined } },
 				{ upsert: true },
 			)
 		} catch (e: any) {
