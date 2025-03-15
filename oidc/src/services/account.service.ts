@@ -1,4 +1,4 @@
-import { accounts } from '../db/memory.js'
+import { Account } from '../db/mongodb/models/Account.js'
 
-export const get = async (key: string) => accounts.get(key)
-export const set = async (key: string, value: any) => accounts.set(key, value)
+export const get = async (key: string) => await Account.findOne({ username: key })
+export const set = async (key: string, value: any) => await Account.insertMany(value)

@@ -5,7 +5,7 @@ export class MongoDbAdapter {
 
 	/**
 	 *
-	 * Creates an instance of MemoryAdapter for an oidc-provider model.
+	 * Creates an instance of MongoDbAdapter for an oidc-provider model.
 	 *
 	 * @constructor
 	 * @param {string} name Name of the oidc-provider model. One of "Grant, "Session", "AccessToken",
@@ -33,14 +33,21 @@ export class MongoDbAdapter {
 	 */
 	async upsert(id: string, payload: any, expiresIn: number): Promise<any> {
 		try {
-			console.log('upsert', id, payload, expiresIn)
+			console.log('upsert:', id, payload, expiresIn)
+			let expiresAt;
+
+			if (expiresIn) {
+				expiresAt = new Date(Date.now() + (expiresIn * 1000));
+			}
+
 			return await BaseModel.updateOne(
 				{ key: id },
-				{ payload, expiresAt: new Date(Date.now() + expiresIn * 1000) },
+				// { payload, expiresAt: new Date(Date.now() + expiresIn * 1000) },
+				{ $set: { payload, ...(expiresAt ? { expiresAt } : undefined) } },
 				{ upsert: true },
 			)
-		} catch (e) {
-			console.log('error upsert', e)
+		} catch (e: any) {
+			console.log('error upsert:', e?.message)
 		}
 	}
 

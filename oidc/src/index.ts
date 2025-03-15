@@ -27,13 +27,15 @@ const start = async () => {
 
 	// log requests
 	app.use((req, res, next) => {
-		console.log('ping', req.method, req.url);
+		console.log('>>>>>');
+		console.log('ping:', req.method, req.url);
 
 		next();
 
 		res.on("finish", () => {
 			// console.log("finish req", req.params, req.query, req.body);
-			console.log("finish res", res.statusCode, res.statusMessage);
+			console.log("finish res:", res.statusCode, res.statusMessage);
+			console.log('<<<<<');
 		});
 	});
 
@@ -70,19 +72,14 @@ const start = async () => {
 		/** pre-processing
 		 * you may target a specific action here by matching `ctx.path`
 		 */
-		// console.log('pre middleware', ctx.method, ctx.path)
 
-		try {
-			await next()
-		} catch (err) {
-			console.error(err)
-			ctx.oidc.error = err
-		}
+		await next()
 
-		console.log('#########################')
-		console.log('post middleware', ctx.method, ctx.oidc.route)
-		console.log(ctx.oidc.body, ctx.oidc.error)
-		console.log('#########################')
+		// post processing
+		console.log('post middleware:', ctx.method, ctx.path, ctx.oidc.route)
+		if (ctx.oidc.body) console.log(`body: ${JSON.stringify(ctx.oidc.body)}`)
+		if (ctx.oidc.error) console.log(`error: ${ctx.oidc.error}`)
+		if (ctx.body) console.log('ctx.body:', ctx.body)
 	})
 
 	// Use the router

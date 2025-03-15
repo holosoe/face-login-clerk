@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import Provider from 'oidc-provider'
-import * as accountService from '../services/account-persist.service.js'
+import * as accountService from '../services/account.service.js'
 
 function debug(obj: any) {
 	return Object.entries(obj)

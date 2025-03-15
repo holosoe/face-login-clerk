@@ -5,7 +5,7 @@ import instance from 'oidc-provider/lib/helpers/weak_cache.js'
 import dpopValidate from 'oidc-provider/lib/helpers/validate_dpop.js'
 import resolveResource from 'oidc-provider/lib/helpers/resolve_resource.js'
 import { Request, Response, NextFunction } from 'express'
-import * as accountService from '../../services/account-persist.service.js'
+import * as accountService from '../../services/account.service.js'
 
 export const gty = 'password'
 
