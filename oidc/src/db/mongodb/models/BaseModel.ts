@@ -14,9 +14,9 @@ BaseModelSchema.index(
 )
 
 BaseModelSchema.index(
-	{ 'payload.grantId': 1, 'payload.kind': 1 },
+	{ 'payload.grantId': 1 },
 	{
-		unique: true,
+		// unique: true,
 		partialFilterExpression: {
 			'payload.kind': {
 				$in: [
