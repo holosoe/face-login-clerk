@@ -1,6 +1,6 @@
 import { Configuration } from 'oidc-provider'
 import { MongoDbAdapter } from '../adapters/mongodb.js'
-import * as accountService from '../services/account-persist.service.js'
+import * as accountService from '../services/account.service.js'
 
 export const configuration: Configuration = {
 	scopes: ['api:read', 'api:write', 'offline_access'],
@@ -48,7 +48,7 @@ export const configuration: Configuration = {
 			client_id: 'clerk',
 			client_secret: 'a_long_complex_secret',
 			grant_types: ['implicit', 'authorization_code', 'refresh_token'],
-			response_types: ['code', 'id_token'],
+			response_types: ['code'],
 			redirect_uris: ['https://wealthy-skink-32.clerk.accounts.dev/v1/oauth_callback', 'https://dapi.clerk.com/v1/oauth_debug/callback', 'https://oauthdebugger.com/debug', 'https://dummy.com/callback']
 		},
 	],
@@ -118,20 +118,17 @@ export const configuration: Configuration = {
 			},
 		],
 	},
-	// cookies: {
-	// 	keys: ['subzero'],
-	// },
 	cookies: {
 		keys: ['cookies-secret-key'], // Make sure this is set
 		long: {
 			signed: true,
 			secure: true, // Set to false for HTTP in development
-			sameSite: 'strict' // Try 'lax' for development
+			sameSite: 'lax' // Try 'lax' for development
 		},
 		short: {
 			signed: true,
 			secure: true, // Set to false for HTTP in development
-			sameSite: 'lax'
+			sameSite: 'lax' // Try 'lax' for development
 		}
 	},
 	ttl: {
@@ -178,6 +175,6 @@ export const configuration: Configuration = {
 		required: () => false,
 	},
 	renderError: (ctx, out, error) => {
-		console.log(error)
+		console.log('renderError:', out, error)
 	},
 }
