@@ -123,12 +123,12 @@ export const configuration: Configuration = {
 		long: {
 			signed: true,
 			secure: true, // Set to false for HTTP in development
-			sameSite: 'strict' // Try 'lax' for development
+			sameSite: 'lax' // Try 'lax' for development
 		},
 		short: {
 			signed: true,
 			secure: true, // Set to false for HTTP in development
-			sameSite: 'strict' // Try 'lax' for development
+			sameSite: 'lax' // Try 'lax' for development
 		}
 	},
 	ttl: {
