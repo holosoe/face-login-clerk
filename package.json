@@ -4,12 +4,11 @@
   "description": "Face Login Clerk",
   "keywords": [],
   "license": "MIT",
-  "author": "dev@code.dev",
+  "author": "soe",
   "type": "module",
   "scripts": {
     "start": "node --loader ts-node/esm oidc/src/index.ts",
-    "start:oidc": "node --loader ts-node/esm oidc/src/index.ts",
-    "test": "echo \"Gandalf: You shall !not pass!\" && exit 1"
+    "test": "echo \"test\" && exit 1"
   },
   "dependencies": {
     "body-parser": "^1.20.3",
@@ -36,7 +35,6 @@
   },
   "packageManager": "pnpm@9.14.2",
   "engines": {
-    "node": ">=20.15.0",
-    "pnpm": ">=9.14.2"
+    "node": ">=20.15.0"
   }
 }

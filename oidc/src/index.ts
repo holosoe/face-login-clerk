@@ -23,8 +23,6 @@ const start = async () => {
 	// Serve static files
 	app.use(express.static(path.resolve('public')))
 
-	// app.use(express.urlencoded({ extended: true }))
-
 	// log requests
 	app.use((req, res, next) => {
 		console.log('>>>>>');
@@ -73,13 +71,37 @@ const start = async () => {
 		 * you may target a specific action here by matching `ctx.path`
 		 */
 
-		await next()
+		try {
+			await next()
+		} catch (error) {
+			console.error('middleware error:', error)
+		}
 
 		// post processing
-		console.log('post middleware:', ctx.method, ctx.path, ctx.oidc.route)
-		if (ctx.oidc.body) console.log(`body: ${JSON.stringify(ctx.oidc.body)}`)
-		if (ctx.oidc.error) console.log(`error: ${ctx.oidc.error}`)
+		console.log('oidc:', ctx.method, ctx.path, ctx.oidc?.route)
+		if (ctx.oidc?.body) console.log(`body: ${JSON.stringify(ctx.oidc.body)}`)
+		if (ctx.oidc?.error) console.log(`error: ${ctx.oidc.error}`)
 		if (ctx.body) console.log('ctx.body:', ctx.body)
+	})
+
+	// handle oidc provider errors
+	// const logError = (ctx: any, err: any) => {
+	// 	console.log('error:', ctx, err)
+	// }
+
+	// provider.on('grant.error', logError)
+	// provider.on('introspection.error', logError)
+	// provider.on('revocation.error', logError)
+	// provider.on('userinfo.error', logError)
+	// provider.on('token.error', logError)
+	// provider.on('interaction.error', logError)
+
+	process.on('unhandledRejection', (reason, promise) => {
+		console.error('Unhandled Rejection:', 'reason:', reason)
+	})
+
+	process.on('uncaughtException', (err) => {
+		console.error('Uncaught Exception:', err)
 	})
 
 	// Use the router
@@ -87,6 +109,20 @@ const start = async () => {
 
 	// Mount the OIDC provider
 	app.use('/', provider.callback())
+
+	// Add error handling middleware (must be after all other middleware and routes)
+	app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+		// Determine status code (default to 500 if not specified)
+		const statusCode = err.statusCode || err.status || 500;
+
+		console.error('Error:', statusCode, err.message);
+
+		res.status(statusCode).json({
+			error: err.code || 'server_error',
+			error_description: err.message || 'An unexpected error occurred'
+		});
+
+	});
 
 	server = app.listen(process.env.PORT_OIDC, () => {
 		console.log(`oidc-provider listening on port ${process.env.PORT_OIDC}`)

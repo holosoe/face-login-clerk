@@ -33,7 +33,7 @@ export class MongoDbAdapter {
 	 */
 	async upsert(id: string, payload: any, expiresIn: number): Promise<any> {
 		try {
-			console.log('upsert:', id, payload, expiresIn)
+			console.log('upsert:', id, payload?.kind, payload, expiresIn)
 			let expiresAt;
 
 			if (expiresIn) {
@@ -63,6 +63,7 @@ export class MongoDbAdapter {
 	 */
 	async find(id: string): Promise<any> {
 		const doc = await BaseModel.findOne({ key: id, 'payload.kind': this.model })
+		console.log('find:', id, doc?.payload?.kind, doc)
 		return doc?.payload
 	}
 
