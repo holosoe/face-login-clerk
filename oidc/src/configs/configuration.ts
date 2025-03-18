@@ -49,7 +49,7 @@ export const configuration: Configuration = {
 			client_secret: 'a_long_complex_secret',
 			grant_types: ['implicit', 'authorization_code', 'refresh_token'],
 			response_types: ['code'],
-			redirect_uris: ['https://wealthy-skink-32.clerk.accounts.dev/v1/oauth_callback', 'https://epic-eft-18.clerk.accounts.dev/v1/oauth_callback', 'https://dapi.clerk.com/v1/oauth_debug/callback', 'https://oauthdebugger.com/debug', 'https://dummy.com/callback']
+			redirect_uris: ['https://wealthy-skink-32.clerk.accounts.dev/v1/oauth_callback', 'https://epic-eft-18.clerk.accounts.dev/v1/oauth_callback', 'https://dapi.clerk.com/v1/oauth_debug/callback', 'https://oauthdebugger.com/debug']
 		},
 	],
 	claims: {
@@ -122,13 +122,13 @@ export const configuration: Configuration = {
 		keys: ['cookies-secret-key'], // Make sure this is set
 		long: {
 			signed: true,
-			secure: false, // Set to false for HTTP in development
-			sameSite: 'lax' // Try 'lax' for development
+			secure: true, // Set to false for HTTP in development
+			sameSite: 'strict' // Try 'lax' for development
 		},
 		short: {
 			signed: true,
-			secure: false, // Set to false for HTTP in development
-			sameSite: 'lax' // Try 'lax' for development
+			secure: true, // Set to false for HTTP in development
+			sameSite: 'strict' // Try 'lax' for development
 		}
 	},
 	ttl: {
