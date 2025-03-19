@@ -344,15 +344,15 @@ class VerificationProcessor {
 
         // temporary workaround
         console.log(this.latestNetworkRequest)
-        alert(this.latestNetworkRequest.responseURL)
+        // alert(this.latestNetworkRequest.responseURL)
 
-        setTimeout(() => {
-          FaceTecSDK.FaceTecCustomization.setOverrideResultScreenSuccessMessage("3D Liveness Proven\nFace Verified");
-        }, 5000);
+        // setTimeout(() => {
+        //   FaceTecSDK.FaceTecCustomization.setOverrideResultScreenSuccessMessage("3D Liveness Proven\nFace Verified");
+        // }, 5000);
 
-        setTimeout(() => {
-          FaceTecSDK.FaceTecCustomization.setOverrideResultScreenSuccessMessage("You have successfully logged in");
-        }, 5000);
+        // setTimeout(() => {
+        //   FaceTecSDK.FaceTecCustomization.setOverrideResultScreenSuccessMessage("You have successfully logged in");
+        // }, 5000);
 
         window.location.href = this.latestNetworkRequest.responseURL;
 
