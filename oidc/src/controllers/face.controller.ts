@@ -40,10 +40,61 @@ export default (oidc: Provider): { [key: string]: (req: Request, res: Response) 
     },
     // FaceTec API /match-3d-3d
     verifyFace: async (req, res) => {
-        console.log('verify', req.headers, req.body)
-        const {
-            prompt: { name },
-        } = await oidc.interactionDetails(req, res)
+        console.log('verify', req.headers['x-device-key'], req.headers['x-user-agent'], typeof req.body)
+        // const {
+        //     prompt: { name },
+        // } = await oidc.interactionDetails(req, res)
+
+
+        // Use fetch instead of XMLHttpRequest
+        fetch(`https://api.facetec.com/api/v3.1/biometrics/match-3d-3d`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Device-Key': String(req.headers['x-device-key'] || ''),
+                'X-User-Agent': String(req.headers['x-user-agent'] || '')
+            },
+            body: JSON.stringify(req.body),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(resJSON => {
+
+                console.log("resJSON", resJSON, typeof resJSON);
+                console.log("externalDatabaseRefId", resJSON.externalDatabaseRefId, resJSON['externalDatabaseRefId']);
+
+                // check match level
+
+                // check if there is an error
+
+                // check security checks
+
+                const result = {
+                    login: { accountId: 'user' },
+                    response: resJSON
+                }
+
+                oidc.interactionFinished(req, res, result, {
+                    mergeWithLastSubmission: false,
+                })
+
+            })
+            .catch(error => {
+                console.log("error", error);
+
+                const result = {
+                    error: 'access_denied',
+                    error_description: 'Face verification failed.',
+                }
+
+                oidc.interactionFinished(req, res, result, {
+                    mergeWithLastSubmission: false,
+                })
+            });
 
     },
     // FaceTec API /match-3d-3d

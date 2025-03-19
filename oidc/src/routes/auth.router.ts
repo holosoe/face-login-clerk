@@ -12,12 +12,12 @@ export default (oidc: Provider) => {
 	const { verifyFace, enrollFace, login, register } = faceController(oidc)
 
 	// router.post('/users', express.json(), register)
-	// router.post('/interaction/:uid/login', noCache, express.urlencoded({ extended: true }), asyncController(login))
 
-	router.post('/face/:uid/login', noCache, express.urlencoded({ extended: true }), asyncController(login))
-	router.post('/face/verify', noCache, express.urlencoded({ extended: true }), asyncController(verifyFace))
+	
+	router.post('/interaction/:uid/verify', noCache, asyncController(verifyFace))
 	// router.post('/faces/enroll', enrollFace)
 
+	router.post('/interaction/:uid/login', noCache, express.urlencoded({ extended: true }), asyncController(login))
 	router.post('/interaction/:uid/confirm', noCache, asyncController(confirmInteraction))
 	router.get('/interaction/:uid/abort', noCache, asyncController(abortInteraction))
 	router.get('/interaction/:uid', noCache, asyncController(interaction))

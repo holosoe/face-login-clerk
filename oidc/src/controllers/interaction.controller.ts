@@ -68,6 +68,8 @@ export default (oidc: Provider): { [key: string]: (req: Request, res: Response) 
 			res,
 		)) as any
 
+		console.log('interaction prompt:', uid, prompt.name, params, session)
+
 		if (prompt.name === 'login') {
 			return res.render('login', {
 				uid,
@@ -81,6 +83,7 @@ export default (oidc: Provider): { [key: string]: (req: Request, res: Response) 
 				},
 			})
 		} else if (prompt.name === 'consent') {
+			console.log('consent', uid)
 			return res.render('consent', {
 				uid,
 				title: 'Authorize',

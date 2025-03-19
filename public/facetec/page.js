@@ -329,29 +329,52 @@ class VerificationProcessor {
 
     console.log("VerificationProcessor parameters:", parameters);
 
-    // call FaceTec API /match-3d-3d on the backend
+    // call server to verify face: face/verify
+    // server will call FaceTec API /match-3d-3d
+    // XMLHttpRequest is used for fine-grained upload progress
     this.latestNetworkRequest = new XMLHttpRequest();
     // this.latestNetworkRequest.open("POST", Config.BaseURL + "/match-3d-3d");
-    this.latestNetworkRequest.open("POST", "http://localhost:3008/face/verify");
+    this.latestNetworkRequest.open("POST", "/interaction/"+ window.location.pathname.split('/')[2] + "/verify");
     this.latestNetworkRequest.setRequestHeader("Content-Type", "application/json");
     this.latestNetworkRequest.setRequestHeader("X-Device-Key", Config.DeviceKeyIdentifier);
     this.latestNetworkRequest.setRequestHeader("X-User-Agent", FaceTecSDK.createFaceTecAPIUserAgentString(sessionResult.sessionId));
 
     this.latestNetworkRequest.onreadystatechange = () => {
       if(this.latestNetworkRequest.readyState === XMLHttpRequest.DONE) {
+
+        // temporary workaround
+        console.log(this.latestNetworkRequest)
+
+
+        alert(this.latestNetworkRequest.responseURL)
+
+        setTimeout(() => {
+          FaceTecSDK.FaceTecCustomization.setOverrideResultScreenSuccessMessage("3D Liveness Proven\nFace Verified");
+        }, 5000);
+
+        setTimeout(() => {
+          FaceTecSDK.FaceTecCustomization.setOverrideResultScreenSuccessMessage("You have successfully logged in");
+        }, 5000);
+
+        window.location.href = this.latestNetworkRequest.responseURL;
+
+        /*
         try {
           const responseJSON = JSON.parse(this.latestNetworkRequest.responseText);
-          const scanResultBlob = responseJSON.scanResultBlob;
+          const scanResultBlob = responseJSON.response.scanResultBlob;
+          
+          alert('scanResultBlob')
 
-          console.log(responseJSON);
+          console.log("scanResultBlob", scanResultBlob);
+          console.log("responseJSON", responseJSON);
 
-          if(responseJSON.wasProcessed === true && responseJSON.error === false) {
+          if(responseJSON.response.wasProcessed === true && responseJSON.response.error === false) {
             FaceTecSDK.FaceTecCustomization.setOverrideResultScreenSuccessMessage("3D Liveness Proven\nFace Verified");
-            faceScanResultCallback.proceedToNextStep(scanResultBlob);
+            // faceScanResultCallback.proceedToNextStep(scanResultBlob);
           }
           else {
-            if(responseJSON.error === true && responseJSON.errorMessage != null) {
-              this.cancelDueToNetworkError(responseJSON.errorMessage, faceScanResultCallback);
+            if(responseJSON.response.error === true && responseJSON.response.errorMessage != null) {
+              this.cancelDueToNetworkError(responseJSON.response.errorMessage, faceScanResultCallback);
             }
             else {
               this.cancelDueToNetworkError("Unexpected API response, cancelling out.", faceScanResultCallback);
@@ -361,12 +384,13 @@ class VerificationProcessor {
         catch {
           this.cancelDueToNetworkError("Exception while handling API response, cancelling out.", faceScanResultCallback);
         }
+          */
       }
     };
 
-    this.latestNetworkRequest.onerror = () => {
-      this.cancelDueToNetworkError("XHR error, cancelling.", faceScanResultCallback);
-    };
+    // this.latestNetworkRequest.onerror = () => {
+    //   this.cancelDueToNetworkError("XHR error, cancelling.", faceScanResultCallback);
+    // };
 
     this.latestNetworkRequest.upload.onprogress = (event) => {
       var progress = event.loaded / event.total;
@@ -374,6 +398,7 @@ class VerificationProcessor {
     };
 
     var jsonStringToUpload = JSON.stringify(parameters);
+    this.latestNetworkRequest.withCredentials = true; // include cookies as well
     this.latestNetworkRequest.send(jsonStringToUpload);
   }
 
