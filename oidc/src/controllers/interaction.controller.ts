@@ -8,35 +8,7 @@ function debug(obj: any) {
 		.join('<br>')
 }
 
-export default (oidc: Provider): { [key: string]: (req: Request, res: Response, next: NextFunction) => Promise<void> } => ({
-	login: async (req, res) => {
-		const {
-			prompt: { name },
-		} = await oidc.interactionDetails(req, res)
-		if (name === 'login') {
-			const account = await accountService.get(req.body.username)
-			let result: any
-			if (account?.password === req.body.password) {
-				result = { login: { accountId: req.body.username } }
-			} else {
-				result = {
-					error: 'access_denied',
-					error_description: 'Username or password is incorrect.',
-				}
-			}
-			return oidc.interactionFinished(req, res, result, {
-				mergeWithLastSubmission: false,
-			})
-		}
-	},
-	register: async (req, res) => {
-		const body = req.body
-		await accountService.set(body.username, {
-			username: body.username,
-			password: body.password,
-		})
-		res.status(200).send('User successfully created.')
-	},
+export default (oidc: Provider): { [key: string]: (req: Request, res: Response) => Promise<void> } => ({
 	confirmInteraction: async (req, res) => {
 		const interactionDetails = await oidc.interactionDetails(req, res)
 		const {
@@ -79,6 +51,7 @@ export default (oidc: Provider): { [key: string]: (req: Request, res: Response, 
 			res.status(400).send('Interaction prompt type must be `consent`.')
 		}
 	},
+	// abort, end the interaction session in DB
 	abortInteraction: async (req, res) => {
 		const result = {
 			error: 'access_denied',
@@ -88,7 +61,8 @@ export default (oidc: Provider): { [key: string]: (req: Request, res: Response, 
 			mergeWithLastSubmission: false,
 		})
 	},
-	interaction: async (req, res, next) => {
+	// show either login page or consent page
+	interaction: async (req, res) => {
 		const { uid, prompt, params, session } = (await oidc.interactionDetails(
 			req,
 			res,
