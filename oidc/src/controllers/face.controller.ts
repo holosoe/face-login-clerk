@@ -41,9 +41,9 @@ export default (oidc: Provider): { [key: string]: (req: Request, res: Response) 
     // FaceTec API /match-3d-3d
     verifyFace: async (req, res) => {
         console.log('verify', req.headers['x-device-key'], req.headers['x-user-agent'], typeof req.body)
-        // const {
-        //     prompt: { name },
-        // } = await oidc.interactionDetails(req, res)
+        const {
+            prompt: { name },
+        } = await oidc.interactionDetails(req, res)
 
 
         // Use fetch instead of XMLHttpRequest
@@ -62,7 +62,7 @@ export default (oidc: Provider): { [key: string]: (req: Request, res: Response) 
                 }
                 return response.json();
             })
-            .then(resJSON => {
+            .then(async resJSON => {
 
                 console.log("resJSON", resJSON, typeof resJSON);
                 console.log("externalDatabaseRefId", resJSON.externalDatabaseRefId, resJSON['externalDatabaseRefId']);
@@ -74,13 +74,24 @@ export default (oidc: Provider): { [key: string]: (req: Request, res: Response) 
                 // check security checks
 
                 const result = {
-                    login: { accountId: 'user' },
-                    response: resJSON
+                    login: { accountId: 'user' }
                 }
 
-                oidc.interactionFinished(req, res, result, {
+                const returnTo = await oidc.interactionResult(req, res, result, {
                     mergeWithLastSubmission: false,
                 })
+
+                // resJSON.returnTo = returnTo
+                // resJSON.accountId = 'user'
+                console.log("returnTo", returnTo)
+
+                resJSON.returnTo = returnTo
+
+                res.json(resJSON)
+
+                // oidc.interactionFinished(req, res, result, {
+                //     mergeWithLastSubmission: false,
+                // })
 
             })
             .catch(error => {

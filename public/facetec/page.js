@@ -343,36 +343,31 @@ class VerificationProcessor {
       if(this.latestNetworkRequest.readyState === XMLHttpRequest.DONE) {
 
         // temporary workaround
+        alert("check console")
         console.log(this.latestNetworkRequest)
-        // alert(this.latestNetworkRequest.responseURL)
+        alert("check console")
 
-        // setTimeout(() => {
-        //   FaceTecSDK.FaceTecCustomization.setOverrideResultScreenSuccessMessage("3D Liveness Proven\nFace Verified");
-        // }, 5000);
+        console.log(JSON.parse(this.latestNetworkRequest.responseText))
 
-        // setTimeout(() => {
-        //   FaceTecSDK.FaceTecCustomization.setOverrideResultScreenSuccessMessage("You have successfully logged in");
-        // }, 5000);
-
-        window.location.href = this.latestNetworkRequest.responseURL;
-
-        /*
         try {
           const responseJSON = JSON.parse(this.latestNetworkRequest.responseText);
-          const scanResultBlob = responseJSON.response.scanResultBlob;
-          
+          this.latestNetworkRequest.responseJSON = responseJSON
+
+          const scanResultBlob = responseJSON.scanResultBlob;
           alert('scanResultBlob')
 
           console.log("scanResultBlob", scanResultBlob);
           console.log("responseJSON", responseJSON);
 
-          if(responseJSON.response.wasProcessed === true && responseJSON.response.error === false) {
+          alert(responseJSON.wasProcessed)
+
+          if(responseJSON.wasProcessed === true && responseJSON.error === false) {
             FaceTecSDK.FaceTecCustomization.setOverrideResultScreenSuccessMessage("3D Liveness Proven\nFace Verified");
-            // faceScanResultCallback.proceedToNextStep(scanResultBlob);
+            faceScanResultCallback.proceedToNextStep(scanResultBlob);
           }
           else {
-            if(responseJSON.response.error === true && responseJSON.response.errorMessage != null) {
-              this.cancelDueToNetworkError(responseJSON.response.errorMessage, faceScanResultCallback);
+            if(responseJSON.error === true && responseJSON.errorMessage != null) {
+              this.cancelDueToNetworkError(responseJSON.errorMessage, faceScanResultCallback);
             }
             else {
               this.cancelDueToNetworkError("Unexpected API response, cancelling out.", faceScanResultCallback);
@@ -382,13 +377,12 @@ class VerificationProcessor {
         catch {
           this.cancelDueToNetworkError("Exception while handling API response, cancelling out.", faceScanResultCallback);
         }
-          */
       }
     };
 
-    // this.latestNetworkRequest.onerror = () => {
-    //   this.cancelDueToNetworkError("XHR error, cancelling.", faceScanResultCallback);
-    // };
+    this.latestNetworkRequest.onerror = () => {
+      this.cancelDueToNetworkError("XHR error, cancelling.", faceScanResultCallback);
+    };
 
     this.latestNetworkRequest.upload.onprogress = (event) => {
       var progress = event.loaded / event.total;
@@ -396,7 +390,6 @@ class VerificationProcessor {
     };
 
     var jsonStringToUpload = JSON.stringify(parameters);
-    this.latestNetworkRequest.withCredentials = true; // include cookies as well
     this.latestNetworkRequest.send(jsonStringToUpload);
   }
 
@@ -406,6 +399,8 @@ class VerificationProcessor {
     if(this.success) {
       console.log("Verification successful");
       this.sampleAppControllerReference.onSuccess("Verification/login successful");
+
+      window.location.href = this.latestNetworkRequest.responseJSON.returnTo;
     }
     else {
       console.log("Verification unsuccessful", this.latestSessionResult);
