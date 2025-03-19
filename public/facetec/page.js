@@ -344,8 +344,6 @@ class VerificationProcessor {
 
         // temporary workaround
         console.log(this.latestNetworkRequest)
-
-
         alert(this.latestNetworkRequest.responseURL)
 
         setTimeout(() => {

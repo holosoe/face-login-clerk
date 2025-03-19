@@ -1,61 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FaceTec Login</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <script type="module">
-    import { Config } from "/facetec/Config.js";
-    window.Config = Config;
-  </script>
+		import { Config } from "/facetec/Config.js";
+		window.Config = Config;
+	</script>
   <script type="module">
-    import FaceTecStrings from "/facetec/core-sdk-optional/FaceTecStrings.js";
+		import FaceTecStrings from "/facetec/core-sdk-optional/FaceTecStrings.js";
     window.FaceTecStrings = FaceTecStrings;
-  </script>
+	</script>
   <script src="/facetec/core-sdk/FaceTecSDK.js/FaceTecSDK.js"></script>
 </head>
-
 <body class="bg-gray-100">
   <div class="flex items-center justify-center">
-    <div class="mt-14 px-10 py-10 bg-white min-h-[55vh] border-1 border-zinc-300 rounded-xl"
-      style="max-width: 360px; width: 360px;">
+    <div class="mt-14 px-10 py-10 bg-white min-h-[55vh] border-1 border-zinc-300 rounded-xl" style="max-width: 360px; width: 360px;">
       <div class="flex items-center justify-center">
         <img src="/facetec/HumanTech_logo.png" width="180" height="64" alt="human.tech" />
       </div>
       <h2 style="text-align: center;" class="mt-4 text-lg text-black"><strong>Face</strong>Login</h2>
 
       <div class="w-full mt-10 mb-2">
-        <input id="userIDInput"
-          class="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-100 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-          placeholder="UserID" />
+        <input 
+          id="userIDInput" 
+          class="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-100 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+          placeholder="UserID" 
+        />
       </div>
-      <div class="grid grid-flow-col mt-4">
-        <!--<button 
+      <div class="grid grid-flow-col">
+        <button 
           id="registerButton"
           class="rounded-sm bg-indigo-700 col-span-2 m-2 p-2 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-600 active:shadow-none" 
           type="button"
         >
           Register
-        </button>-->
-        <button id="loginButton"
-          class="rounded-sm bg-indigo-700 col-span-3 m-0 p-2 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none"
-          type="button">
+        </button>
+        <button 
+          id="loginButton"
+          class="rounded-sm bg-indigo-700 col-span-2 m-2 p-2 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none" 
+          type="button"
+        >
           Login
         </button>
-        <div class="col-span-1 m-0 p-2 border border-transparent text-center text-sm hover:underline">
-          <a href="/interaction/<%= uid %>/abort">Cancel</a>
-        </div>
       </div>
 
-
-
+      <a href="/interaction/<%= uid %>/abort">[ Cancel ]</a>
+      
       <div id="statusMessage" class="mt-4 p-2 rounded-sm text-xs hidden"></div>
     </div>
   </div>
 
   <script src="/facetec/page.js"></script>
 </body>
-
-</html>
+</html> 
